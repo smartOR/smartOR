@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+				xmlns:acmgr="http://www.smartOR.de/2012/AccessControlManager" 
+				xmlns:mgrp="http://www.smartOR.de/2012/ManagerProfile" 
+				xmlns:dcoperation="http://www.smartOR.de/2012/DeviceControlOperation" 
+				xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+				name="smartOR" 
+				targetNamespace="http://www.smartOR.de/2012/AccessControlManager">
+	<wsdl:types>
+		<xsd:schema xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.smartOR.de/2012/AccessControlManager">
+			<xsd:import namespace="http://www.smartOR.de/2012/ManagerProfile" schemaLocation="ManagerProfile.xsd"/>
+			<xsd:import namespace="http://www.smartOR.de/2012/DeviceControlOperation" schemaLocation="DeviceControlOperation.xsd"/>
+			<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceProfile" schemaLocation="MedicalDeviceProfile.xsd"/>
+			<xsd:element name="setCommand" type="acmgr:setCommandType"/>
+			<xsd:complexType name="setCommandType">
+				<xsd:sequence>
+					<xsd:element name="Destination" type="mdp:MedicalDeviceInformationType"/>
+					<xsd:element name="setCommand" type="dcoperation:setCommandType"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="setParameter" type="acmgr:setParameterType"/>
+			<xsd:complexType name="setParameterType">
+				<xsd:sequence>
+					<xsd:element name="Destination" type="mdp:MedicalDeviceInformationType"/>
+					<xsd:element name="setParameter" type="dcoperation:setParameterType"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<!-- 
+			<xsd:element name="getParameter" type="acmgr:getParameterType"/>
+			<xsd:complexType name="getParameterType">
+				<xsd:sequence>
+					<xsd:element name="Destination" type="mdp:MedicalDeviceInformationType"/>
+					<xsd:element name="getParameter" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			-->
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="setCommandRequest">
+		<wsdl:part name="tns:setCommand" type="acmgr:setCommandType"/>
+	</wsdl:message>
+	<wsdl:message name="setParameterRequest">
+		<wsdl:part name="tns:setParameter" type="acmgr:setParameterType"/>
+	</wsdl:message>
+	<wsdl:message name="setCommandResponse">
+		<wsdl:part name="CommandOutput" element="dcoperation:setCommandResponse"/>
+	</wsdl:message>
+	<wsdl:message name="setParameterResponse">
+		<wsdl:part name="SetParameterOutput" element="dcoperation:setParameterResponse"/>
+	</wsdl:message>
+	<wsdl:message name="getParameterResponse">
+		<wsdl:part name="GetParameterOutput" element="dcoperation:getParameterResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="AccessControlPortType">
+		<wsdl:operation name="setCommand">
+			<wsdl:input message="acmgr:setCommandRequest" wsa:Action="http://www.smartOR.de/2012/AccessControlService/setCommandRequest"/>
+			<wsdl:output message="acmgr:setCommandResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="setParameter">
+			<wsdl:input message="acmgr:setParameterRequest" wsa:Action="http://www.smartOR.de/2012/AccessControlService/setParameterRequest"/>
+			<wsdl:output message="acmgr:setParameterResponse"/>
+		</wsdl:operation>
+		<!--
+		<wsdl:operation name="getParameter">
+			<wsdl:input message="acmgr:getParameterRequest" wsa:Action="http://www.smartOR.de/2012/AccessControlService/getParameterRequest"/>
+			<wsdl:output message="acmgr:getParameterResponse"/>
+		</wsdl:operation>
+		-->
+	</wsdl:portType>
+	<wsdl:binding name="AccessControlBinding" type="acmgr:AccessControlPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="setCommand">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/AccessControlService/setCommand"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="setParameter">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/AccessControlService/setParameter"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<!-- getParameter excluded from AccessControlManager, cause getParameter can be called on every device
+		<wsdl:operation name="getParameter">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/AccessControlService/getParameter"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		-->
+	</wsdl:binding>
+	<wsdl:service name="DeviceControlService">
+		<wsdl:port name="AccessControlPort" binding="acmgr:AccessControlBinding">
+			<soap12:address location="http://www.smartOR.de/2012/Manager/DeviceControlService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!--
+	<wsdl:message name="getParameterRequest">
+		<wsdl:part name="tns:getParameter" type="acmgr:getParameterType"/>
+	</wsdl:message>
+	-->
+	<!-- Inclusion of standard interface for the service manager to propagate device information -->
+	<!-- AccessControl specific stuff begins here... -->
+</wsdl:definitions>

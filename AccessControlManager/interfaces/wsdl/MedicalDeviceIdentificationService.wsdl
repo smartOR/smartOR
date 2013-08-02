@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+				  xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+				  xmlns:mds="http://www.smartOR.de/2012/MedicalDeviceService" 
+				  xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+				  xmlns:mgrp="http://www.smartOR.de/2012/ManagerProfile" 
+				  name="smartOR" 
+				  targetNamespace="http://www.smartOR.de/2012/MedicalDeviceService">
+	<wsdl:types>
+	<!-- TARGETNAMESPACE SOLLTE "MedicalDeviceIdentificationService" lauten?? (Uli Kneer)-->
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/MedicalDeviceService">
+		<!-- IST der IMPORT von MedicalDeviceProfile.xsd überhaupt notwendig, wen schon ManagerProfile.xsd
+			importiert wird und darin auch schon MedicalDeviceProfile.xsd enthalten ist (Uli Kneer)??-->
+			<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceProfile" schemaLocation="MedicalDeviceProfile.xsd"/>
+			<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>
+			<xsd:import namespace="http://www.smartOR.de/2012/ManagerProfile" schemaLocation="ManagerProfile.xsd"/>
+			<!-- Device Identification -->
+			<xsd:element name="getIdentificationRequest"/>
+			<xsd:element name="getIdentificationResponse" type="mdp:MedicalDeviceProfileType"/>
+			<!-- Heartbeat -->
+			<xsd:element name="checkHeartbeatRequest"/>
+			<xsd:element name="checkHeartbeatResponse" type="mdparam:ResultStateType"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="getIdentificationRequest">
+		<wsdl:part name="getIdentificationInput" element="mds:getIdentificationRequest"/>
+	</wsdl:message>
+	<wsdl:message name="getIdentificationResponse">
+		<wsdl:part name="getIdentificationOutput" element="mds:getIdentificationResponse"/>
+	</wsdl:message>
+	<wsdl:message name="registerManagerRequest">
+		<wsdl:part name="registerManagerInput" element="mgrp:registerManagerRequest"/>
+	</wsdl:message>
+	<wsdl:message name="registerManagerResponse">
+		<wsdl:part name="registerManagerOutput" element="mgrp:registerManagerResponse"/>
+	</wsdl:message>
+	<wsdl:message name="checkHeartbeatRequest">
+		<wsdl:part name="checkHeartbeatInput" element="mds:checkHeartbeatRequest"/>
+	</wsdl:message>
+	<wsdl:message name="checkHeartbeatResponse">
+		<wsdl:part name="checkHeartbeatOutput" element="mds:checkHeartbeatResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="IdentificationPortType">
+		<wsdl:operation name="getIdentification">
+			<wsdl:input message="mds:getIdentificationRequest" wsa:Action="http://www.smartOR.de/2012/IdentificationService/getIdentificationRequest"/>
+			<wsdl:output message="mds:getIdentificationResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="RegisterManagerPortType">
+		<wsdl:operation name="registerManager">
+			<wsdl:input message="mds:registerManagerRequest" wsa:Action="http://www.smartOR.de/2012/IdentificationService/registerManagerRequest"/>
+			<wsdl:output message="mds:registerManagerResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:portType name="HeartbeatPortType">
+		<wsdl:operation name="checkHeartbeat">
+			<wsdl:input message="mds:checkHeartbeatRequest" wsa:Action="http://www.smartOR.de/2012/IdentificationService/checkHeartbeatRequest"/>
+			<wsdl:output message="mds:checkHeartbeatResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="IdentificationBinding" type="mds:IdentificationPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="getIdentification">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/IdentificationService/getIdentification" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="RegisterManagerBinding" type="mds:RegisterManagerPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="registerManager">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/IdentificationService/registerManager" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:binding name="HeartbeatBinding" type="mds:HeartbeatPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="checkHeartbeat">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/IdentificationService/checkHeartbeat" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="IdentificationService">
+		<wsdl:port name="IdentificationServicePort" binding="mds:IdentificationBinding">
+			<soap12:address location="http://www.smartOR.de/2012/IdentificationService"/>
+		</wsdl:port>
+		<wsdl:port name="RegisterManagerServicePort" binding="mds:RegisterManagerBinding">
+			<soap12:address location="http://www.smartOR.de/2012/IdentificationService"/>
+		</wsdl:port>
+		<wsdl:port name="HeartbeatServicePort" binding="mds:HeartbeatBinding">
+			<soap12:address location="http://www.smartOR.de/2012/IdentificationService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- Device Identification-->
+	<!-- Manager Registration -->
+	<!-- Heartbeat -->
+	<!-- Device Identification-->
+	<!-- Manager Registration-->
+	<!-- Heartbeat -->
+	<!-- Device Identification-->
+	<!-- Manager Registration -->
+	<!-- Heartbeat -->
+	<!-- Device Identification and Manager Registration -->
+</wsdl:definitions>

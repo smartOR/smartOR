@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+				  xmlns:mdservice="http://www.smartOR.de/2012/MedicalDeviceService" 
+				  xmlns:dcoperation="http://www.smartOR.de/2012/DeviceControlOperation" 
+				  name="smartOR" 
+				  targetNamespace="http://www.smartOR.de/2012/MedicalDeviceService">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/MedicalDeviceService">
+			<xsd:import namespace="http://www.smartOR.de/2012/DeviceControlOperation" schemaLocation="DeviceControlOperation.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="setParameterRequest">
+		<wsdl:part name="SetParameterInput" element="dcoperation:setParameterRequest"/>
+	</wsdl:message>
+	<wsdl:message name="setParameterResponse">
+		<wsdl:part name="SetParameterOutput" element="dcoperation:setParameterResponse">
+    </wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="getParameterRequest">
+		<wsdl:part name="GetParameterInput" element="dcoperation:getParameterRequest"/>
+	</wsdl:message>
+	<wsdl:message name="getParameterResponse">
+		<wsdl:part name="GetParameterOutput" element="dcoperation:getParameterResponse"/>
+	</wsdl:message>
+	<wsdl:message name="setCommandRequest">
+		<wsdl:part name="CommandInput" element="dcoperation:setCommandRequest"/>
+	</wsdl:message>
+	<wsdl:message name="setCommandResponse">
+		<wsdl:part name="CommandOutput" element="dcoperation:setCommandResponse">
+    </wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="DeviceControlPortType">
+		<wsdl:operation name="setParameter">
+			<wsdl:input message="mdservice:setParameterRequest" wsa:Action="http://www.smartOR.de/2012/DeviceControlService/setParameterRequest"/>
+			<wsdl:output message="mdservice:setParameterResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="getParameter">
+			<wsdl:input message="mdservice:getParameterRequest" wsa:Action="http://www.smartOR.de/2012/DeviceControlService/getParameterRequest"/>
+			<wsdl:output message="mdservice:getParameterResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="setCommand">
+			<wsdl:input message="mdservice:setCommandRequest" wsa:Action="http://www.smartOR.de/2012/DeviceControlService/setCommandRequest"/>
+			<wsdl:output message="mdservice:setCommandResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="DeviceControlBinding" type="mdservice:DeviceControlPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="setParameter">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/DeviceControlService/setParameter" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getParameter">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/DeviceControlService/getParameter" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="setCommand">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/DeviceControlService/setCommand" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="DeviceControlService">
+		<wsdl:port name="DeviceControlPort" binding="mdservice:DeviceControlBinding">
+			<soap12:address location="http://www.smartOR.de/2012/DeviceControlService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- END SETPARAMETER -->
+	<!-- START GETPARAMETER -->
+	<!-- END GETPARAMETER -->
+	<!-- START SETCOMMAND -->
+	<!-- END SETCOMMAND-->
+	<!-- START PORTTYPE COMMAND AND MODIFYPARAMETER -->
+	<!-- END PORTTYPE COMMAND AND MODIFIYPARAMETER-->
+	<!-- START BINDING MODIFYPARAMETER -->
+	<!-- END BINDING MODIFYPARAMETER -->
+	<!-- START BINDING COMMANDS -->
+	<!-- END BINDING COMMANDS -->
+	<!-- START SERVICE DEFINITION -->
+	<!-- END SERVICE DEFINITION -->
+</wsdl:definitions>

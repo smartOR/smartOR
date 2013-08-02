@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:mdn="http://www.smartOR.de/2012/MedicalDeviceNotificationService"
+				  xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter"
+                  xmlns:dcoperation="http://www.smartOR.de/2012/DeviceControlOperation"
+                  xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing"
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+				  xmlns:mdservice="http://www.smartOR.de/2012/MedicalDeviceService"
+				  name="smartOR"
+				  targetNamespace="http://www.smartOR.de/2012/MedicalDeviceNotificationService">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.smartOR.de/2012/MedicalDeviceNotificationService">
+      <xsd:import namespace="http://www.smartOR.de/2012/DeviceControlOperation" schemaLocation="DeviceControlOperation.xsd" />
+        <!--<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>-->
+        <xsd:element name="setEventRequest" type="mdn:setEventRequestType"/>
+        <xsd:complexType name="setEventRequestType">
+			<xsd:sequence>
+				<xsd:element ref="dcoperation:setParameterRequest" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="setEventRequest">
+    <wsdl:part name="setEventInput" element="mdn:setEventRequest"/>
+  </wsdl:message>
+  <wsdl:message name="setEventResponse">
+    <wsdl:part name="setEventOutput" element="dcoperation:setParameterResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="DeviceNotificationPortType">
+    <wsdl:operation name="setEvent">
+      <wsdl:input message="mdn:setEventRequest" wsa:Action="http://www.smartOR.de/2012/DeviceNotificationService/setEventRequest"/>
+      <wsdl:output message="mdn:setEventResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DeviceNotificationBinding" type="mdn:DeviceNotificationPortType">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="setEvent">
+      <soap12:operation soapAction="http://www.smartOR.de/2012/DeviceNotificationService/setEvent" soapActionRequired="true"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DeviceNotificationService">
+    <wsdl:port name="DeviceNotificationPort" binding="mdn:DeviceNotificationBinding">
+      <soap12:address location="http://www.smartOR.de/2012/DeviceNotificationService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

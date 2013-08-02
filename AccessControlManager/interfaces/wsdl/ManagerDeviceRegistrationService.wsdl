@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!-- This WSDL document describes the OSCB interface of the ServiceManager - (Sub)Managers communication -->
+<wsdl:definitions xmlns:mgrp="http://www.smartOR.de/2012/ManagerProfile" 
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing"
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+				  xmlns:mgrReg="http://www.smartOR.de/2012/ManagerDeviceRegistration"
+				  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+				  targetNamespace="http://www.smartOR.de/2012/ManagerDeviceRegistration">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/ManagerDeviceRegistration" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xsd:import namespace="http://www.smartOR.de/2012/ManagerProfile" schemaLocation="ManagerProfile.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="registerDeviceRequest">
+		<wsdl:part name="addressPart" element="mgrp:IdentificationDeviceRef"/>
+	</wsdl:message>
+	<wsdl:message name="registerDeviceResponse">
+		<wsdl:part name="resultPart" element="mgrp:RegisterDeviceResult"/>
+	</wsdl:message>
+	<wsdl:portType name="DeviceRegistrationPortType">
+		<wsdl:operation name="registerDevice">
+			<wsdl:input message="mgrReg:registerDeviceRequest" wsa:Action="http://www.smartOR.de/2012/ManagerDeviceRegistration/registerDeviceRequest"/>
+			<wsdl:output message="mgrReg:registerDeviceResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="DeviceRegistrationBinding" type="mgrReg:DeviceRegistrationPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="registerDevice">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/ManagerDeviceRegistration/registerDevice" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="DeviceRegistrationService">
+		<wsdl:port name="DeviceRegistrationPort" binding="mgrReg:DeviceRegistrationBinding">
+			<soap12:address location="http://www.smartOR.de/2012/Manager/DeviceRegistrationService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- Register device messages-->
+	<!-- Register device port type-->
+	<!-- DeviceRegistration binding-->
+	<!-- Register device service-->
+</wsdl:definitions>

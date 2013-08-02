@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:evvmgr="http://www.smartOR.de/2012/EventManager" 
+				  xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+                  xmlns:dcoperation="http://www.smartOR.de/2012/DeviceControlOperation"
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"  
+				  targetNamespace="http://www.smartOR.de/2012/EventManager">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/EventManager">
+			<!--<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>-->
+            <xsd:import namespace="http://www.smartOR.de/2012/DeviceControlOperation" schemaLocation="DeviceControlOperation.xsd" />
+			<!-- Element definitions for fireEvent-->
+			<xsd:element name="fireEventRequest" type="evvmgr:setParameterType"/>
+			<xsd:complexType name="setParameterType">
+				<xsd:sequence>
+					<xsd:element ref="dcoperation:setParameterRequest" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:complexType>
+            <xsd:element name="fireEventResponse" type="mdparam:ResultStateType"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="fireEventRequest">
+		<wsdl:part name="fireEventInput" element="evvmgr:fireEventRequest" minOccurs="1" maxOccurs="unbounded"/>
+	</wsdl:message>
+	<wsdl:message name="fireEventResponse">
+		<wsdl:part name="fireEventOutput" element="evvmgr:fireEventResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="FireEventPortType">
+		<wsdl:operation name="fireEvent">
+			<wsdl:input message="evvmgr:fireEventRequest" wsa:Action="http://www.smartOR.de/2012/EventManager/fireEventRequest"/>
+			<wsdl:output message="evvmgr:fireEventResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="FireEventBinding" type="evvmgr:FireEventPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="fireEvent">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/EventManager/fireEventRequest" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="FireEventService">
+		<wsdl:port name="FireEventPort" binding="evvmgr:FireEventBinding">
+			<soap12:address location="http://www.smartOR.de/2012/EventManager/FireEventService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

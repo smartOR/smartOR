@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+			xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+			targetNamespace="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+			elementFormDefault="qualified" 
+			attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceProfile" schemaLocation="MedicalDeviceProfile.xsd"/>
+
+	<!-- START StringParameter -->
+	<xsd:element name="StringParameter" type="mdparam:StringParameterType"/>
+	<xsd:complexType name="StringParameterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="value" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END StringParameter -->
+	<!-- START BooleanParameter -->
+	<xsd:element name="BooleanParameter" type="mdparam:BooleanParameterType"/>
+	<xsd:complexType name="BooleanParameterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="value" type="xsd:boolean"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END BooleanParameter -->
+	<!-- START BinaryParameter -->
+	<xsd:element name="BinaryParameter" type="mdparam:BinaryParameterType"/>
+	<xsd:complexType name="BinaryParameterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="value" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END BinaryParameter -->
+	<!-- START PhysicalParameter -->
+	<xsd:element name="PhysicalParameter" type="mdparam:PhysicalParameterType"/>
+	<xsd:complexType name="PhysicalParameterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="minValue" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="maxValue" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="stepValue" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="value" type="xsd:double" minOccurs="1"/>
+			<xsd:element name="targetValue" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="unit" type="mdp:CodeStringType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END PhysicalParameter -->
+	<!-- START ListParameter-->
+	<xsd:element name="ListParameter" type="mdparam:ListParameterType"/>
+	<xsd:complexType name="ListParameterType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:choice minOccurs="1" maxOccurs="1">
+				<xsd:sequence>
+					<xsd:element name="StringParameter" type="mdparam:StringParameterType" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element name="BooleanParameter" type="mdparam:BooleanParameterType" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element name="BinaryParameter" type="mdparam:BinaryParameterType" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:sequence>
+					<xsd:element name="PhysicalParameter" type="mdparam:PhysicalParameterType" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- END ListParameter -->
+	<xsd:element name="DeviceParameter" type="mdparam:DeviceParameterType"/>
+	<xsd:complexType name="DeviceParameterType">
+		<xsd:choice minOccurs="1" maxOccurs="1">
+			<xsd:element name="StringParameter" type="mdparam:StringParameterType"/>
+			<xsd:element name="BooleanParameter" type="mdparam:BooleanParameterType"/>
+			<!--<xsd:element name="BinaryParameter" type="mdparam:BinaryParameterType"/>-->
+			<xsd:element name="PhysicalParameter" type="mdparam:PhysicalParameterType"/>
+			<!--<xsd:element name="ListParameter" type="mdparam:ListParameterType"/>-->
+		</xsd:choice>
+	</xsd:complexType>
+	<!-- SOLLTE EVTL. NACH medicalDeviceProfile verschoben werden (Uli Kneer)-->
+	<xsd:element name="ResultState" type="mdparam:ResultStateType"/>
+	<xsd:simpleType name="ResultStateType">
+		<xsd:annotation>
+			<xsd:documentation>
+        Enumeration of possible return values (results) to setParameter or setCommand.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="MDC_RESULT_READONLY"/>
+			<xsd:enumeration value="MDC_RESULT_BUSY"/>
+			<xsd:enumeration value="MDC_RESULT_DENIED"/>
+			<xsd:enumeration value="MDC_RESULT_UNKNOWN"/>
+			<xsd:enumeration value="MDC_RESULT_ACCEPTED"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

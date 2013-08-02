@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This WSDL document describes the OSCB interface of the ServiceManager -->
+<wsdl:definitions xmlns:srvmgr="http://www.smartOR.de/2012/ServiceManager"  
+				  xmlns:mgrp="http://www.smartOR.de/2012/ManagerProfile" 
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+				  targetNamespace="http://www.smartOR.de/2012/ServiceManager">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/ServiceManager" elementFormDefault="qualified" attributeFormDefault="unqualified">
+			<xsd:import namespace="http://www.smartOR.de/2012/ManagerProfile" schemaLocation="ManagerProfile.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="getDevicesRequest">
+		<wsdl:part name="devicePart" element="mgrp:DeviceFilter" wsa:Action="http://www.smartOR.de/2012/ServiceManager/getDevicesRequest"/>
+	</wsdl:message>
+	<wsdl:message name="getDevicesResponse">
+		<wsdl:part name="devicesListPart" element="mgrp:DeviceList" wsa:Action="http://www.smartOR.de/2012/ServiceManager/getDevicesResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="GetDevicesPortType">
+		<wsdl:operation name="getDevices">
+			<wsdl:input message="srvmgr:getDevicesRequest" wsa:Action="http://www.smartOR.de/2012/ServiceManager/getDevicesRequest"/>
+			<wsdl:output message="srvmgr:getDevicesResponse" wsa:Action="http://www.smartOR.de/2012/ServiceManager/getDevicesResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="GetDevicesBinding" type="srvmgr:GetDevicesPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="getDevices">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/ServiceManager/getDevices" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="GetDevicesService">
+		<wsdl:port name="GetDevicesPort" binding="srvmgr:GetDevicesBinding">
+			<soap12:address location="http://www.smartOR.de/2012/ServiceManager/GetDevicesService"/>
+		</wsdl:port>
+	</wsdl:service>
+	<!-- Service Manager specific stuff begins here...-->
+	<!-- get devices messages-->
+	<!-- get devices port type-->
+	<!-- get devices binding-->
+	<!-- get devices service-->
+</wsdl:definitions>

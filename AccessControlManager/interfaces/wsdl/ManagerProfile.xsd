@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		    xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+			xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+			xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+			xmlns:mgrp="http://www.smartOR.de/2012/ManagerProfile" 
+			targetNamespace="http://www.smartOR.de/2012/ManagerProfile" 
+			elementFormDefault="qualified" 
+			attributeFormDefault="unqualified">
+	<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>
+	<xsd:import namespace="http://www.w3.org/2005/08/addressing" schemaLocation="external/ws-addr.xsd"/>
+	<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceProfile" schemaLocation="MedicalDeviceProfile.xsd"/>
+	<!-- RegisterDevice, used for device propagation from service manager to (sub)manager(s) -->
+	<xsd:element name="IdentificationDeviceRef" type="xsd:string"/>
+	<!-- Device Filter for ServiceManager.getDevices(..) -->
+	<xsd:element name="DeviceFilter" type="mgrp:DeviceFilterType"/>
+	<xsd:complexType name="DeviceFilterType">
+		<xsd:sequence>
+			<xsd:element name="DeviceFilterItem" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Device List -->
+	<xsd:element name="DeviceList" type="mgrp:DeviceListType"/>
+	<xsd:complexType name="DeviceListType">
+		<xsd:sequence>
+			<!-- TODO Include metadata section(s) of dpws here (Host/Hosted ... ThisDevice, ThisModel?) -->
+			<xsd:element name="MedicalDeviceProfile" type="mdp:MedicalDeviceProfileType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- ManagerRoleType  -->
+	<xsd:element name="ManagerRole" type="mgrp:ManagerRoleType"/>
+	<xsd:simpleType name="ManagerRoleType">
+		<xsd:annotation>
+			<xsd:documentation>
+        Enumeration of possible manager roles.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OSCB_ROLE_DEV_MANAGER_SERVICE"/>
+			<xsd:enumeration value="OSCB_ROLE_DEV_MANAGER_EVENT"/>
+			<xsd:enumeration value="OSCB_ROLE_DEV_MANAGER_ACCESSCONTROL"/>
+		</xsd:restriction>
+		<!-- StF 2012-08-02 Using OSCB_ coding instead of MDC_DEV_MANAGER_... because oscb managers are by definition no medical devices and do not implement an MDP -->
+	</xsd:simpleType>
+	<!-- Medical Device Manager Type -->
+	<xsd:element name="registerManagerRequest" type="mgrp:ManagerProfileType"/>
+	<xsd:element name="registerManagerResponse" type="mgrp:RegisterManagerResultType"/>
+	<xsd:element name="ManagerProfile" type="mgrp:ManagerProfileType">
+		<xsd:annotation>
+			<xsd:documentation>Identification information of the OSCB managers.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="ManagerProfileType">
+		<xsd:annotation>
+			<xsd:documentation>
+        foo...
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="EndpointReference" type="xsd:string"/>
+			<xsd:element name="XAddress" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<!-- TODO Fix lower vs. upper case for element names-->
+	</xsd:complexType>
+	<!-- END Medical Device Manager Type -->
+	<!-- Event Type-->
+	<xsd:element name="Event" type="mgrp:EventType"/>
+	<xsd:complexType name="EventType">
+		<xsd:sequence>
+			<xsd:element name="name" type="mdp:CodeStringType"/>
+			<!-- MDC coding of the event -->
+			<xsd:element name="parameter" type="mdparam:DeviceParameterType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- START RegisterManagerResult -->
+	<xsd:element name="RegisterManagerResult" type="mgrp:RegisterManagerResultType"/>
+	<xsd:simpleType name="RegisterManagerResultType">
+		<xsd:annotation>
+			<xsd:documentation>
+        Enumeration of possible results of manager registration. Sent from device to managers.
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OSCB_REGISTERMANAGER_RESULT_SUCCEEDED"/>
+			<xsd:enumeration value="OSCB_REGISTERMANAGER_RESULT_UPDATED">
+				<xsd:annotation>
+					<xsd:documentation>
+            MDC_REGISTERMANAGER_RESULT_UPDATED must only be sent if the device
+            estimated to have a valid manager of the given type. The new manager information
+            must overwrite previous settings. 
+          </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="OSCB_REGISTERMANAGER_RESULT_FAILED"/>
+			<xsd:enumeration value="OSCB_REGISTERMANAGER_RESULT_UNKNOWN">
+				<xsd:annotation>
+					<xsd:documentation>
+            Unknown must only be sent if the device does not implement the handling of the given
+            manager type due to versioning stuff.
+          </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<!-- StF 2012-08-02 Using OSCB_ coding instead of MDC_... because oscb managers are by definition no medical devices and do not implement an MDP -->
+		</xsd:restriction>
+		<!-- StF 2012-08-02 Using OSCB_ coding instead of MDC_... because oscb managers are by definition no medical devices and do not implement an MDP -->
+	</xsd:simpleType>
+	<!-- END RegisterManagerResult -->
+	<!-- START RegisterDeviceResult -->
+	<xsd:element name="RegisterDeviceResult" type="mgrp:RegisterDeviceResultType"/>
+	<xsd:simpleType name="RegisterDeviceResultType">
+		<xsd:annotation>
+			<xsd:documentation>
+        Enumeration of possible results of device propagation to managers. Sent from service manager to (sub)manager(s).
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OSCB_REGISTERDEVICE_RESULT_SUCCEEDED"/>
+			<xsd:enumeration value="OSCB_REGISTERDEVICE_RESULT_FAILED"/>
+		</xsd:restriction>
+		<!-- StF 2012-08-02 Using OSCB_ coding instead of MDC_... because oscb managers are by definition no medical devices and do not implement an MDP -->
+	</xsd:simpleType>
+	<!-- END RegisterDeviceResult -->
+</xsd:schema>

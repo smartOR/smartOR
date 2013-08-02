@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+			targetNamespace="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+			attributeFormDefault="qualified">
+	<!-- StF 2012-08-02   
+  Das muss rausfliegen um eine Ringabhängigkeit zu vermeiden...
+  
+  <xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>
+-->
+	<!-- MDC Code string-->
+	<xsd:simpleType name="CodeStringType">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="(MDC_)?[A-Z,_]"/>
+			<!-- TODO Fix the regular expression, >> Events, Commands, ..? -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--Medical Device Parameter Description -->
+	<xsd:element name="MedicalDeviceParameterDescription" type="mdp:MedicalDeviceParameterDescriptionType"/>
+	<xsd:complexType name="MedicalDeviceParameterDescriptionType">
+		<xsd:sequence>
+			<xsd:element name="name" type="mdp:CodeStringType"/>
+			<xsd:element name="valueType" type="xsd:QName"/>
+			<xsd:element name="isSetable" type="xsd:boolean"/>
+			<xsd:element name="acceptedCommand" type="mdp:CodeStringType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--Medical Device Stream Parameter Description -->
+	<xsd:element name="MedicalDeviceStreamParameterDescription" type="mdp:MedicalDeviceStreamParameterDescriptionType"/>
+	<xsd:complexType name="MedicalDeviceStreamParameterDescriptionType">
+		<xsd:sequence>
+			<xsd:element name="name" type="mdp:CodeStringType"/>
+			<xsd:element name="protocol" type="mdp:StreamProtocolType"/>
+			<xsd:element name="remoteAddress" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="remotePort" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="customParameter" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="StreamProtocolType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="STREAM_PROTOCOL_RTSP"/>
+			<xsd:enumeration value="STREAM_PROTOCOL_CUSTOM "/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- StF 2012-08-02
+  Getrennt in MedicalDeviceInformation (nur die eindeutige Kennung) und MedicalDeviceProfile (MedicalDeviceInformation + Parameterliste, Kommandoliste und Eventliste >> MDP) 
+-->
+	<!-- Medical Device Information-->
+	<xsd:element name="MedicalDeviceInformation" type="mdp:MedicalDeviceInformationType"/>
+	<xsd:complexType name="LocalizedStringType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:anyAttribute namespace="##other" processContents="lax"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="MedicalDeviceInformationType" final="extension">
+		<xsd:sequence>
+			<xsd:element name="EndpointReference" type="xsd:string" maxOccurs="unbounded"/>
+			<xsd:element name="XAddress" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="FriendlyName" type="mdp:LocalizedStringType" maxOccurs="unbounded"/>
+			<xsd:element name="Manufacturer" type="xsd:string"/>
+			<xsd:element name="SerialNumber" type="xsd:string"/>
+			<xsd:element name="FirmwareVersion" type="xsd:string"/>
+			<xsd:element name="HardwareVersion" type="xsd:string"/>
+			<xsd:element name="SoftwareVersion" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="DeviceTypeID" type="xsd:string" use="required"/>
+		<xsd:attribute name="DeviceSubTypeID" type="xsd:string" use="required"/>
+		<xsd:attribute name="UsesIEEECodes" type="xsd:boolean" use="required"/>
+		<xsd:anyAttribute namespace="##other"/>
+	</xsd:complexType>
+	<!-- Medical Device Profile -->
+	<xsd:element name="MedicalDeviceProfile" type="mdp:MedicalDeviceProfileType"/>
+	<xsd:complexType name="MedicalDeviceProfileType" final="extension">
+		<xsd:sequence>
+			<xsd:element name="DeviceInformation" type="mdp:MedicalDeviceInformationType"/>
+			<xsd:element name="ParameterDescription" type="mdp:MedicalDeviceParameterDescriptionType"/>
+			<xsd:element name="StreamParameterDescription" type="mdp:MedicalDeviceStreamParameterDescriptionType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- StF 2012-08-02
+  <xsd:element name="DeviceParameter" type="mdparam:DeviceParameterType"/>
+  <xsd:attribute name="ServiceId" type="xsd:anyURI"/>
+-->
+</xsd:schema>

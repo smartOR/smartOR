@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:evvmgr="http://www.smartOR.de/2012/EventManager" 
+				  xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"  
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+				  targetNamespace="http://www.smartOR.de/2012/EventManager">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://www.smartOR.de/2012/EventManager">
+			<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>
+			<xsd:element name="eventNotification" type="evvmgr:setParameterType"/>
+			<xsd:complexType name="setParameterType">
+				<xsd:sequence>
+					<xsd:element name="DeviceParameter" type="mdparam:DeviceParameterType" minOccurs="1" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="eventResponse" type="mdparam:ResultStateType"/>
+			<!--* *availabeSubscribtions *-->
+			<xsd:element name="availableSubscriptionsRequest"/>
+			<xsd:element name="availableSubscriptionsResponse" type="evvmgr:AvailableSubscribtionsOutputType"/>
+			<xsd:complexType name="AvailableSubscribtionsOutputType">
+				<xsd:sequence>
+					<xsd:element name="DeviceParameter" type="mdparam:DeviceParameterType"/>
+					<xsd:element name="Classes" type="xsd:string"/>
+					<xsd:element name="Filter" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<!--* *eventSubscribtion *-->
+			<xsd:element name="setSubscriptionsRequest" type="evvmgr:SubscribtionsInputType"/>
+			<xsd:complexType name="SubscribtionsInputType">
+				<xsd:sequence>
+					<!--<xsd:element name="DeviceParameter" type="mdp:MedicalDeviceParameterDescriptionType"/>-->
+					<xsd:element name="DeviceParameter" type="xsd:string"/>
+					<xsd:element name="Classes" type="xsd:string"/>
+					<xsd:element name="Filter" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="setSubscriptionsResponse" type="mdparam:ResultStateType"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="notificationMessage">
+		<wsdl:part name="notificationOutput" element="evvmgr:eventNotification"/>
+	</wsdl:message>
+	<wsdl:message name="solicitMessage">
+		<wsdl:part name="notificationSolicit" element="evvmgr:eventResponse"/>
+	</wsdl:message>
+	<wsdl:message name="getAvailableSubscriptionsRequest">
+		<wsdl:part name="getAvailableSubscriptionsInput" element="evvmgr:availableSubscriptionsRequest"/>
+	</wsdl:message>
+	<wsdl:message name="getAvailableSubscriptionsResponse">
+		<wsdl:part name="getAvailableSubscriptionsOutput" element="evvmgr:availableSubscriptionsResponse"/>
+	</wsdl:message>
+	
+	<wsdl:message name="setSubscriptionsRequest">
+		<wsdl:part name="setSubscriptionsInput" element="evvmgr:setSubscriptionsRequest"/>
+	</wsdl:message>
+	<wsdl:message name="setSubscriptionsResponse">
+		<wsdl:part name="setSubscriptionsOutput" element="evvmgr:setSubscriptionsResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="NotificationPortType" n2:EventSource="true" xmlns:n2="http://schemas.xmlsoap.org/ws/2004/08/eventing">
+		<wsdl:operation name="eventNotification">
+			<wsdl:output message="evvmgr:notificationMessage" wsa:Action="http://www.smartOR.de/2012/EventManager/notificationEvent"/>
+			<wsdl:input message="evvmgr:solicitMessage"/>
+		</wsdl:operation>
+		<wsdl:operation name="getAvailableSubscriptions">
+			<wsdl:input message="evvmgr:getAvailableSubscriptionsRequest" wsa:Action="http://www.smartOR.de/2012/EventManager/getAvailableSubscriptionsRequest"/>
+			<wsdl:output message="evvmgr:getAvailableSubscriptionsResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="setSubscriptions">
+			<wsdl:input message="evvmgr:setSubscriptionsRequest" wsa:Action="http://www.smartOR.de/2012/EventManager/setSubscriptionsRequest"/>
+			<wsdl:output message="evvmgr:setSubscriptionsResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="NotificationBinding" type="evvmgr:NotificationPortType">
+		<soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="eventNotification">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/EventManager/eventNotification" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="getAvailableSubscriptions">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/EventManager/getAvailableSubscriptions" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="setSubscriptions">
+			<soap12:operation soapAction="http://www.smartOR.de/2012/EventManager/setSubscriptions" soapActionRequired="true"/>
+			<wsdl:input>
+				<soap12:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output>
+				<soap12:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="NotificationService">
+		<wsdl:port name="NotificationPort" binding="evvmgr:NotificationBinding">
+			<soap12:address location="http://www.smartOR.de/2012/EventManager/NotificationService"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

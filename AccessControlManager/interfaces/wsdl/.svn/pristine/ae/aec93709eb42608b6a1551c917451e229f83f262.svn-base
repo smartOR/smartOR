@@ -1,0 +1,60 @@
+<xsd:schema xmlns:mdp="http://www.smartOR.de/2012/MedicalDeviceProfile" 
+			xmlns:mdparam="http://www.smartOR.de/2012/MedicalDeviceParameter" 
+			xmlns:dcoperation="http://www.smartOR.de/2012/DeviceControlOperation" 
+			xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+			xmlns:wsa="http://www.w3.org/2005/08/addressing" 
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+			xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+			targetNamespace="http://www.smartOR.de/2012/DeviceControlOperation">
+	<!-- IST der IMPORT von MedicalDeviceProfile.xsd ueberhaupt notwendig, wen schon MedicalDeviceParameter.xsd
+	importiert wird und darin auch schon MedicalDeviceProfile.xsd enthalten ist (Uli Kneer)??-->
+	<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceProfile" schemaLocation="MedicalDeviceProfile.xsd"/>
+	<xsd:import namespace="http://www.smartOR.de/2012/MedicalDeviceParameter" schemaLocation="MedicalDeviceParameter.xsd"/>
+	<!-- StF 2012-08-02 GetParameter stuff -->
+	<xsd:element name="getParameterRequest" type="xsd:string"/>
+	<xsd:element name="getParameterResponse" type="dcoperation:getParameterResponseType"/>
+	<xsd:complexType name="getParameterResponseType">
+		<xsd:choice minOccurs="1" maxOccurs="1">
+			<xsd:element ref="mdparam:DeviceParameter"/>
+			<xsd:element name="getParameterFault" type="dcoperation:getParameterFaultType"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:simpleType name="getParameterFaultType">
+		<xsd:restriction base="mdparam:ResultStateType">
+			<xsd:enumeration value="MDC_RESULT_BUSY"/>
+			<xsd:enumeration value="MDC_RESULT_DENIED"/>
+			<xsd:enumeration value="MDC_RESULT_UNKNOWN"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- START SETPARAMETERTYPE -->
+	<xsd:element name="setParameterRequest" type="dcoperation:setParameterType"/>
+	<xsd:complexType name="setParameterType">
+		<xsd:sequence>
+			<xsd:element name="DeviceParameter" type="mdparam:DeviceParameterType"/>
+			<xsd:element name="Source" type="mdp:MedicalDeviceInformationType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="setParameterResponse" type="mdparam:ResultStateType"/>
+	<xsd:element name="setCommandRequest" type="dcoperation:setCommandType"/>
+	<xsd:complexType name="setCommandType">
+		<xsd:sequence>
+			<xsd:element name="referenceId" type="mdp:CodeStringType" nillable="true">
+				<xsd:annotation>
+					<xsd:documentation>
+                IEEE Code, "MDC_CAMERA_BRIGHTNESS"
+              </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="commandId" type="mdp:CodeStringType">
+				<xsd:annotation>
+					<xsd:documentation>
+					IEEE Code, "MDC_CMD_PLUS", "MDC_CMD_CAMERA_WHITEBALANCE"
+				  </xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Source" type="mdp:MedicalDeviceInformationType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element name="setCommandResponse" type="mdparam:ResultStateType"/>
+</xsd:schema>
